@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class SeatRepository implements SeatDomainRepository {
@@ -16,15 +17,20 @@ public class SeatRepository implements SeatDomainRepository {
     @Autowired
     private SeatCrudRepository seatCrudRepository;
 
+    @Autowired
     private SeatMapper seatMapper;
 
-    public List<SeatDomain> getSeatsDomain() {
+
+    @Override
+    public List<SeatDomain> getAll() {
         List<Seat> seats = (List<Seat>) seatCrudRepository.findAll();
-        return  seatMapper.toSeatsDomain(seats);
+        return seatMapper.toSeatsDomain(seats);
     }
 
     @Override
-    public List<Seat> getAll() {
-        return (List<Seat>) seatCrudRepository.findAll();
+    public Optional<SeatDomain> getById(int id) {
+        return seatCrudRepository.findById(id).map(p -> seatMapper.toSeatDomain(p));
     }
+
+
 }
